@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
@@ -46,8 +47,18 @@ if uploaded_file is not None:
     with st.spinner("Entrenando el modelo..."):
         history = model.fit(X_train, y_train, epochs=20, batch_size=32, validation_split=0.2, verbose=0)
 
-    y_pred_nn = model.predict(X_test).flatten()
+    # Mostrar gráfico de pérdida
+    st.subheader("Gráfico de pérdida durante el entrenamiento")
+    fig, ax = plt.subplots()
+    ax.plot(history.history['loss'])
+    ax.set_title('Pérdida durante el entrenamiento')
+    ax.set_xlabel('Épocas')
+    ax.set_ylabel('Loss (MSE)')
+    ax.grid(True)
+    st.pyplot(fig)
 
+    # Evaluación del modelo
+    y_pred_nn = model.predict(X_test).flatten()
     mse_nn = mean_squared_error(y_test, y_pred_nn)
     r2_nn = r2_score(y_test, y_pred_nn)
 
