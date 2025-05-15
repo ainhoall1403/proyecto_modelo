@@ -2,26 +2,30 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-
-# Cargar codificadores y scaler
-# IMPORTANTE: Debes tener guardados también los LabelEncoders y el scaler para transformar los inputs iguales que en el entrenamiento.
-# Si no los guardaste, deberás recrearlos con el mismo fit o guardarlos con pickle/joblib.
-
-# Aquí asumimos que los cargaste o recreaste:
-# Ejemplo (si tienes archivos .pkl):
-import joblib
-le_platform = joblib.load("le_platform.pkl")
-le_genre = joblib.load("le_genre.pkl")
-le_publisher = joblib.load("le_publisher.pkl")
-scaler = joblib.load("scaler.pkl")
-
-# Cargar el modelo entrenado
-model = tf.keras.models.load_model("modelo_red_neuronal.keras")
+import joblib  # Para cargar los codificadores y scaler
 
 st.title("🎮 Predicción de Ventas en Europa - Red Neuronal")
 
-# Interfaz para input usuario (igual que antes)
+# Cargar codificadores y scaler con manejo de errores
+try:
+    le_platform = joblib.load("le_platform.pkl")
+    le_genre = joblib.load("le_genre.pkl")
+    le_publisher = joblib.load("le_publisher.pkl")
+    scaler = joblib.load("scaler.pkl")
+    st.write("Codificadores y scaler cargados correctamente.")
+except Exception as e:
+    st.error(f"Error cargando codificadores o scaler: {e}")
+    st.stop()
+
+# Cargar modelo con manejo de errores
+try:
+    model = tf.keras.models.load_model("modelo_red_neuronal.keras")
+    st.write("Modelo cargado correctamente.")
+except Exception as e:
+    st.error(f"Error cargando el modelo: {e}")
+    st.stop()
+
+# Interfaz para inputs usuario
 platform_input = st.selectbox("Plataforma", le_platform.classes_)
 genre_input = st.selectbox("Género", le_genre.classes_)
 publisher_input = st.selectbox("Distribuidora", le_publisher.classes_)
@@ -54,4 +58,4 @@ if st.button("Predecir ventas en Europa"):
         st.success(f"Ventas estimadas en Europa: **{prediccion[0][0]:.2f} millones**")
 
     except Exception as e:
-        st.error(f"Ocurrió un error: {e}")
+        st.error(f"Ocurrió un error durante la predicción: {e}")
