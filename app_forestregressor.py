@@ -75,18 +75,6 @@ if uploaded_file:
     st.write(f"**Error Cuadrático Medio (MSE):** {mse:.2f}")
     st.write(f"**Coeficiente de Determinación (R²):** {r2:.2f}")
 
-    st.subheader("📌 Importancia de Características")
-    importancias = model.feature_importances_
-    features = X.columns
-
-    fig3, ax3 = plt.subplots(figsize=(10, 6))
-    sns.barplot(x=importancias, y=features, palette='viridis', ax=ax3)
-    ax3.set_title('Importancia de cada característica')
-    ax3.set_xlabel('Importancia')
-    ax3.set_ylabel('Características')
-    ax3.grid(True)
-    st.pyplot(fig3)
-
     # --- PREDICCIÓN PERSONALIZADA ---
     st.subheader("🧮 Predicción Personalizada de Ventas en Europa")
 
